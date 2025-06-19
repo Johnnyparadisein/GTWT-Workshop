@@ -1,0 +1,2056 @@
+<!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Driven Content Creation Workshop</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Press+Start+2P&family=Syne:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --primary-green: #00c400;
+            --dark-bg: #000000;
+            --darker-bg: #000000;
+            --light-text: #FFFFFF;
+            --secondary-text: #a0b3c0;
+            --border-color: rgba(0, 196, 0, 0.2);
+            --card-bg: rgba(255, 255, 255, 0.02);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--light-text);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Presentation container */
+        #presentation {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Slide styles */
+        .slide {
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-content {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Slide numbers */
+        .slide-number {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            color: var(--primary-green);
+            opacity: 0.5;
+            z-index: 50;
+        }
+
+        /* Hero slide specific styling */
+        #slide-1 {
+            background: radial-gradient(circle at 50% 50%, rgba(0, 196, 0, 0.03) 0%, transparent 70%);
+            position: relative;
+            overflow: hidden;
+            animation: none;
+        }
+
+        /* About slide styling */
+        #slide-2 {
+            background: linear-gradient(135deg, rgba(0, 196, 0, 0.05) 0%, transparent 50%);
+        }
+
+        /* Hero content layout */
+        .hero-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1000px;
+            padding: 0 2rem;
+            animation: none;
+        }
+
+        .pixel-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(2.5rem, 6vw, 4.2rem);
+            line-height: 1.4;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            position: relative;
+            text-align: center;
+        }
+
+        .pixel-title .line {
+            display: block;
+            margin: 0.5rem 0;
+            position: relative;
+            animation: none;
+        }
+
+        .pixel-title .line-1 {
+            color: var(--light-text);
+        }
+
+        .pixel-title .line-2 {
+            color: var(--primary-green);
+            position: relative;
+            height: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pixel-title .line-3 {
+            color: var(--light-text);
+        }
+
+        .pixel-separator {
+            width: 12px;
+            height: 40px;
+            background: var(--primary-green);
+            margin: 1.5rem auto;
+        }
+
+        /* Typewriter effect */
+        .typewriter-container {
+            position: relative;
+            display: inline-block;
+            min-width: 400px;
+            height: 1.2em;
+        }
+
+        .typewriter-text {
+            font-family: 'Press Start 2P', cursive;
+            font-weight: 800;
+            font-size: clamp(2rem, 6vw, 4rem);
+            color: var(--primary-green);
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        .cursor {
+            display: inline-block;
+            background-color: var(--primary-green);
+            margin-left: 3px;
+            width: 0px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Hero info section */
+        .hero-info {
+            display: none;
+        }
+
+        .hero-presenter {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .hero-center {
+            display: none;
+        }
+
+        .hero-event {
+            display: none;
+        }
+
+        .presenter-name {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 16px;
+            color: var(--primary-green);
+            line-height: 1.4;
+            margin-bottom: 1.5rem;
+            text-shadow: none;
+        }
+
+        .presenter-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--light-text);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.8rem;
+        }
+
+        .tagline {
+            display: none;
+        }
+
+        .event-details {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--light-text);
+            text-transform: uppercase;
+            line-height: 1.6;
+            letter-spacing: 0.05em;
+        }
+
+        .event-highlight {
+            color: var(--primary-green);
+            display: block;
+            margin-bottom: 0.5rem;
+            text-shadow: none;
+        }
+
+        /* About section styling */
+        .about-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .about-image {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: floatIcon 3s ease-in-out infinite;
+        }
+
+        @keyframes floatIcon {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .about-text {
+            text-align: left;
+        }
+
+        .about-intro {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            margin-bottom: 2rem;
+            color: var(--primary-green);
+            font-family: 'Press Start 2P', cursive;
+            text-transform: uppercase;
+        }
+
+        .about-description {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .about-description:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Regular typography for other slides */
+        h1 {
+            font-size: clamp(3.5rem, 8vw, 7rem);
+            font-weight: 800;
+            line-height: 0.9;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        h1 .highlight {
+            color: var(--primary-green);
+        }
+
+        h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        h3 {
+            font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-green);
+        }
+
+        p {
+            font-size: clamp(1rem, 1.8vw, 1.3rem);
+            line-height: 1.6;
+            color: var(--secondary-text);
+            max-width: 700px;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--primary-green);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 3rem;
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            gap: 2rem;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-green);
+        } */
+
+        /* Special styling for Smart Integration card */
+        .card.featured {
+            background: linear-gradient(135deg, rgba(0, 196, 0, 0.08) 0%, rgba(0, 196, 0, 0.02) 100%);
+            border: 2px solid var(--primary-green);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(0, 196, 0, 0.2);
+            position: relative;
+            animation: sonarPulse 4s ease-in-out infinite;
+            overflow: hidden;
+        }
+
+        .card.featured::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(0, 196, 0, 0.1) 0%, 
+                rgba(0, 255, 0, 0.05) 25%, 
+                rgba(0, 196, 0, 0.1) 50%, 
+                rgba(0, 255, 0, 0.05) 75%, 
+                rgba(0, 196, 0, 0.1) 100%);
+            background-size: 200% 200%;
+            animation: innerGradientPulse 3s ease-in-out infinite;
+            z-index: 0;
+            border-radius: 6px;
+        }
+
+        .card.featured > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes innerGradientPulse {
+            0% {
+                background-position: 0% 50%;
+                opacity: 0.3;
+            }
+            50% {
+                background-position: 100% 50%;
+                opacity: 0.7;
+            }
+            100% {
+                background-position: 0% 50%;
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes sonarPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 196, 0, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 0 2px rgba(0, 196, 0, 0);
+            }
+        }
+
+        .card.featured::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 8px;
+            background: transparent;
+            z-index: -1;
+            animation: thinRing1 4s linear infinite;
+        }
+
+        .card.featured .sonar-ring-2 {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 8px;
+            background: transparent;
+            z-index: -1;
+            animation: thinRing2 4s linear infinite;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes thinRing1 {
+            0% {
+                box-shadow: 0 0 0 1px rgba(0, 196, 0, 0.8);
+                transform: scale(1);
+            }
+            100% {
+                box-shadow: 0 0 0 1px rgba(0, 196, 0, 0);
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes thinRing2 {
+            0% {
+                box-shadow: 0 0 0 1px rgba(0, 196, 0, 0.8);
+                transform: scale(1);
+            }
+            100% {
+                box-shadow: 0 0 0 1px rgba(0, 196, 0, 0);
+                transform: scale(1.1);
+            }
+        }
+
+        .card h3 {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+
+        .card p {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+
+        .card-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--secondary-text);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            color: var(--secondary-text);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            background: var(--primary-green);
+        }
+
+        /* Navigation */
+        .nav-dots {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--primary-green);
+            transform: scale(1.5);
+        }
+
+        /* Workflow visualization */
+        .workflow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .workflow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .step-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--light-text);
+        }
+
+        .workflow-arrow {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2rem;
+            color: var(--primary-green);
+            font-weight: 300;
+            text-shadow: 2px 2px 0px rgba(0, 196, 0, 0.3);
+        }
+
+        /* Compact Code/prompt styling */
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.2rem;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: left;
+            margin-top: 0.8rem;
+        }
+
+        .code-line {
+            margin: 0.4rem 0;
+            line-height: 1.4;
+            font-size: 0.8rem;
+        }
+
+        .code-comment {
+            color: var(--secondary-text);
+            opacity: 0.7;
+        }
+
+        .code-keyword {
+            color: var(--primary-green);
+            font-weight: 500;
+        }
+
+        /* Compact prompting cards */
+        .prompting-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        /* .prompting-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-green);
+        } */
+
+        .prompting-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            text-align: left;
+        }
+
+        /* Timer */
+        .timer-display {
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(4rem, 12vw, 8rem);
+            font-weight: 700;
+            color: var(--primary-green);
+            letter-spacing: 0.05em;
+            margin: 2rem 0;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            background: transparent;
+            border: 2px solid var(--primary-green);
+            color: var(--primary-green);
+            padding: 1rem 2rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        /* Pixel heart animation */
+        .pixel-heart {
+            display: inline-block;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 5rem;
+            color: var(--primary-green);
+            margin: 2rem 0;
+            animation: heartPound 1.5s ease-in-out infinite;
+            text-shadow: 2px 2px 0px rgba(0, 196, 0, 0.3);
+        }
+
+        @keyframes heartPound {
+            0%, 100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            25% {
+                transform: scale(1.2);
+                filter: brightness(1.2);
+            }
+            50% {
+                transform: scale(1.1);
+                filter: brightness(1.1);
+            }
+            75% {
+                transform: scale(1.15);
+                filter: brightness(1.15);
+            }
+        }
+
+        /* Improved resources slide styling */
+        .resources-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .resources-main {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1100px;
+            align-items: start;
+        }
+
+        .resources-sidebar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .url-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--primary-green);
+            background: var(--card-bg);
+            padding: 0.8rem 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .qr-placeholder {
+            width: 160px;
+            height: 160px;
+            background: var(--light-text);
+            color: var(--dark-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border-radius: 8px;
+            font-size: 0.8rem;
+        }
+
+        /* Optimized AI Tools List */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.8rem;
+        }
+
+        .tool-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .tool-item:hover {
+            border-color: var(--primary-green);
+            background: rgba(0, 196, 0, 0.05);
+        }
+
+        .tool-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 0.4rem;
+        }
+
+        .tool-description {
+            font-size: 0.7rem;
+            color: var(--secondary-text);
+            margin-bottom: 0.8rem;
+            line-height: 1.2;
+            height: 2.4rem;
+            overflow: hidden;
+        }
+
+        .tool-link {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--light-text);
+            text-decoration: none;
+            background: rgba(0, 196, 0, 0.1);
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .tool-link:hover {
+            color: var(--primary-green);
+            border-color: var(--primary-green);
+            background: rgba(0, 196, 0, 0.2);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            background: transparent;
+            border: none;
+            color: var(--light-text);
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+        }
+
+        .social-link:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 2rem 1rem;
+            }
+
+            .slide-number {
+                bottom: 1rem;
+                right: 1rem;
+                font-size: 0.7rem;
+            }
+            
+            .hero-info {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+            
+            .hero-presenter,
+            .hero-center,
+            .hero-event {
+                text-align: center;
+                justify-self: center;
+            }
+            
+            .about-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .about-image svg {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .workflow {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .workflow-arrow {
+                transform: rotate(90deg);
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .resources-main {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        .tools-categories {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .tools-category {
+            width: 100%;
+        }
+
+        .tools-category h3 {
+            text-align: left;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            color: var(--primary-green);
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .tool-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0.75rem;
+        }
+
+        .tool-name {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            color: var(--primary-green);
+            margin-bottom: 0.4rem;
+        }
+
+        .tool-description {
+            font-size: 0.75rem;
+            color: var(--secondary-text);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+            opacity: 0.8;
+        }
+
+        .tool-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--primary-green);
+            background: rgba(0, 196, 0, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        @media (max-width: 768px) {
+            .tools-categories {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Logo styling */
+        .logo-container {
+            margin-top: 3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .hero-logo {
+            height: 60px;
+            width: auto;
+            opacity: 0.9;
+        }
+
+        .hero-logo:hover {
+            opacity: 1;
+        }
+
+        .presenter-role {
+            color: var(--text-color);
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .presenter-name {
+            color: var(--primary-green);
+            font-size: 1.8rem;
+            letter-spacing: 0;
+            margin: 0;
+            font-weight: normal;
+        }
+
+        .event-highlight {
+            color: var(--primary-green);
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-location {
+            color: var(--text-color);
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .event-time {
+            color: var(--text-color);
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .progress-bar-segment {
+            width: 24px;
+            height: 8px;
+            background-color: rgba(0, 196, 0, 0.2);
+        }
+
+        .progress-bar-segment.active {
+            background-color: var(--primary-green);
+        }
+
+        .connect-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--secondary-text);
+            margin-top: 2rem;
+            margin-bottom: -0.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-dots" id="nav-dots"></div>
+
+    <main id="presentation">
+        
+        <!-- Slide 1: Hero -->
+        <section class="slide active" id="slide-1">
+            <div class="slide-content">
+                <div class="hero-container">
+                    <div class="pixel-title">
+                        <span class="line line-1">AI-DRIVEN</span>
+                        <span class="line line-2">
+                            <div class="typewriter-container">
+                                <span class="typewriter-text" id="typewriter-text"></span>
+                            </div>
+                        </span>
+                        <span class="line line-3">CREATION</span>
+                    </div>
+                    
+                    <div class="hero-presenter">
+                        <div class="presenter-title">WORKSHOP LEAD</div>
+                        <h1 class="presenter-name">JOHN KVEZERELI</h1>
+                        <div class="logo-container">
+                            <img src="assets/COMMSCHOOL LOGO.svg" alt="Communication School Logo" class="hero-logo">
+                            <img src="assets/GTWT LOGO.svg" alt="GTWT Logo" class="hero-logo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">01 / 09</div>
+        </section>
+
+        <!-- Slide 2: About John -->
+        <section class="slide" id="slide-2">
+            <div class="slide-number">02 / 09</div>
+            <div class="slide-content">
+                <div class="about-container">
+                    <div class="about-image">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Hand-Love-Sign--Streamline-Pixel" height="180" width="180">
+                            <desc>
+                                Hand Love Sign Streamline Icon: https://streamlinehq.com
+                            </desc>
+                            <title>hand-love-sign</title>
+                            <g>
+                                <path d="M20.0025 3.4275h1.1400000000000001v14.857499999999998h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M18.855 20.572499999999998H7.4325v-1.1400000000000001H6.285v1.1400000000000001H5.1450000000000005V24h15.997499999999999v-3.4275h-1.1400000000000001v-2.2874999999999996h-1.1475Zm0 2.2874999999999996H16.575000000000003v-1.1475h2.2800000000000002Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M17.715 2.2874999999999996h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.287500000000001 13.7175h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M8.5725 14.857499999999998H12v1.1400000000000001h-3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m9.712499999999999 10.2825 -1.1400000000000001 0 0 1.1475 2.2874999999999996 0 0 -3.4275 2.2874999999999996 0 0 3.4275 -2.2874999999999996 0 0 1.1400000000000001 1.1400000000000001 0 0 2.2874999999999996 1.1475 0 0 -1.1400000000000001 1.1400000000000001 0 0 -5.715 2.2874999999999996 0 0 5.715 1.1400000000000001 0 0 -10.290000000000001 -1.1400000000000001 0 0 3.4275 -5.715 0 0 -5.715 -1.1475 0 0 9.1425z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M7.4325 0h2.2800000000000002v1.1400000000000001H7.4325Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M7.4325 13.7175h1.1400000000000001v1.1400000000000001H7.4325Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m8.5725 10.2825 0 -1.1400000000000001 -1.1400000000000001 0 0 -8.0025 -1.1475 0 0 8.0025 -1.1400000000000001 0 0 1.1400000000000001 3.4275 0z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.1450000000000005 18.285h1.1400000000000001v1.1475H5.1450000000000005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.005 15.997499999999999h1.1400000000000001v2.2874999999999996H4.005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.005 10.2825h1.1400000000000001v1.1475H4.005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.8575 11.43h1.1475v4.5675H2.8575Z" fill="#00c400" stroke-width="0.75"></path>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="about-text">
+                        <div class="about-intro">Hello, I'm John</div>
+                        <div class="about-description">
+                            I combine digital design expertise with a deep dive into integrating AI into creative workflows. My journey has taken me through leading agencies like Redberry, where I've honed my craft.
+                        </div>
+                        <div class="about-description">
+                            I'm passionate about bridging traditional design principles with AI's transformative potential to forge innovative and efficient creative solutions.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: The Transformation -->
+        <section class="slide" id="slide-3">
+            <div class="slide-number">03 / 09</div>
+            <div class="slide-content">
+                <h2>The Creative Revolution</h2>
+                <p>How AI transforms content creation from weeks to hours</p>
+                
+                <div class="card-grid grid-3">
+                    <div class="card">
+                        <div class="card-meta">Traditional Path • Weeks</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Entertainment-Events-Hobbies-Game-Machines-Arcade-1--Streamline-Pixel" height="48" width="48" style="margin-bottom: 1rem;">
+                            <desc>
+                                Entertainment Events Hobbies Game Machines Arcade 1 Streamline Icon: https://streamlinehq.com
+                            </desc>
+                            <title>entertainment-events-hobbies-game-machines-arcade-1</title>
+                            <g>
+                                <path d="M22.8525 4.574999999999999H24V24h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M21.7125 3.4275h1.1400000000000001V4.574999999999999h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M20.565 2.2874999999999996h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M19.424999999999997 1.1400000000000001h1.1400000000000001v1.1475H19.424999999999997Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.2800000000000002 0v4.574999999999999h1.1475v1.1400000000000001h1.1400000000000001v10.2825H3.4275v1.1475H2.2800000000000002v1.1400000000000001H1.1400000000000001v1.1400000000000001h14.857499999999998V24h1.1400000000000001v-5.715h1.1475v-1.1400000000000001h1.1400000000000001v-1.1475h1.1400000000000001V5.715H19.424999999999997V4.574999999999999h-1.1400000000000001V1.1400000000000001h1.1400000000000001V0Zm5.715 1.1400000000000001h9.1425v2.2874999999999996H7.995Zm-2.2874999999999996 0h1.1475v2.2874999999999996H5.7075000000000005ZM3.4275 3.4275V1.1400000000000001h1.1400000000000001v2.2874999999999996Zm3.4275 13.7175H5.7075000000000005v1.1400000000000001H4.5675v-1.1400000000000001h1.1400000000000001v-1.1475h1.1475Zm3.4275 0h-1.1400000000000001v1.1400000000000001h-1.1475v-1.1400000000000001h1.1475v-1.1475h1.1400000000000001Zm5.715 1.1400000000000001h-3.4275v-1.1400000000000001h3.4275Zm1.1400000000000001 -3.4275H7.995v-6.855h9.1425Zm1.1475 -8.0025H5.7075000000000005V5.715h12.5775Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.850000000000001 11.43h1.1475v1.1400000000000001H14.850000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.71 9.1425h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m14.850000000000001 24 0 -2.2874999999999996 -3.4275 0 0 2.2874999999999996 1.1475 0 0 -1.1400000000000001 1.1400000000000001 0 0 1.1400000000000001 1.1400000000000001 0z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M10.2825 12.57h4.5675v1.1475h-4.5675Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M10.2825 9.1425h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M9.1425 11.43h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M0 19.424999999999997h1.1400000000000001V24H0Z" fill="#00c400" stroke-width="0.75"></path>
+                            </g>
+                        </svg>
+                        <h3>Manual Process</h3>
+                        <ul class="feature-list">
+                            <li>Manual brainstorming sessions</li>
+                            <li>Multiple design iterations</li>
+                            <li>Time-consuming research</li>
+                            <li>Writing from scratch</li>
+                            <li>Endless revision cycles</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-meta">AI-Assisted • Hours</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Technology-Robot-Ai-Signal-2--Streamline-Pixel" height="48" width="48" style="margin-bottom: 1rem;">
+                            <desc>
+                                Technology Robot Ai Signal 2 Streamline Icon: https://streamlinehq.com
+                            </desc>
+                            <title>technology-robot-ai-signal-2</title>
+                            <g>
+                                <path d="m20.56875 10.2825 -1.1400000000000001 0 0 -3.4275 -1.1475 0 0 9.1425 1.1475 0 0 -4.5675 1.1400000000000001 0 0 1.1400000000000001 1.1475 0 0 -3.4275 -1.1475 0 0 1.1400000000000001z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m17.14125 21.7125 0 2.2874999999999996 1.1400000000000001 0 0 -1.1400000000000001 2.2874999999999996 0 0 1.1400000000000001 1.1475 0 0 -3.4275 -1.1475 0 0 1.1400000000000001 -3.4275 0z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M19.42875 1.1400000000000001h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M18.28125 2.2874999999999996h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M18.28125 0h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M17.14125 15.997499999999999h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M17.14125 5.715h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m16.00125 10.2825 -1.1475 0 0 -1.1400000000000001 -1.1400000000000001 0 0 2.2874999999999996 1.1400000000000001 0 0 1.1400000000000001 1.1475 0 0 -1.1400000000000001 1.1400000000000001 0 0 -2.2874999999999996 -1.1400000000000001 0 0 1.1400000000000001z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M16.00125 1.1400000000000001h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M6.85875 17.145v1.1400000000000001h1.1400000000000001v1.1400000000000001h-4.574999999999999v1.1475h17.145V19.424999999999997h-4.5675v-1.1400000000000001h1.1400000000000001v-1.1400000000000001Zm7.995 2.2800000000000002h-5.715v-1.1400000000000001h5.715Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.85375 2.2874999999999996h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.85375 0h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m7.998749999999999 21.7125 0 2.2874999999999996 1.1400000000000001 0 0 -1.1400000000000001 5.715 0 0 1.1400000000000001 1.1475 0 0 -2.2874999999999996 -8.0025 0z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M12.56625 1.1400000000000001h1.1475v1.1475h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m12.56625 13.71 -1.1400000000000001 0 0 1.1475 -1.1400000000000001 0 0 1.1400000000000001 3.4275 0 0 -1.1400000000000001 -1.1475 0 0 -1.1475z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M11.42625 0h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M10.286249999999999 1.1400000000000001h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m10.286249999999999 9.1425 -1.1475 0 0 1.1400000000000001 -1.1400000000000001 0 0 -1.1400000000000001 -1.1400000000000001 0 0 2.2874999999999996 1.1400000000000001 0 0 1.1400000000000001 1.1400000000000001 0 0 -1.1400000000000001 1.1475 0 0 -2.2874999999999996z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m7.998749999999999 6.855 1.1400000000000001 0 0 1.1475 5.715 0 0 -1.1475 1.1475 0 0 -1.1400000000000001 1.1400000000000001 0 0 -1.1475 -4.574999999999999 0 0 -2.2800000000000002 -1.1400000000000001 0 0 2.2800000000000002 -4.5675 0 0 1.1475 1.1400000000000001 0 0 1.1400000000000001z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M7.998749999999999 2.2874999999999996h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M7.998749999999999 0h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M6.85875 1.1400000000000001h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.71125 15.997499999999999h1.1475v1.1475h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.71125 5.715h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m5.71125 6.855 -1.1400000000000001 0 0 3.4275 -1.1475 0 0 -1.1400000000000001 -1.1400000000000001 0 0 3.4275 1.1400000000000001 0 0 -1.1400000000000001 1.1475 0 0 4.5675 1.1400000000000001 0 0 -9.1425z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.57125 2.2874999999999996h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.57125 0h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M3.42375 1.1400000000000001h1.1475v1.1475h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m2.28375 24 1.1400000000000001 0 0 -1.1400000000000001 2.2874999999999996 0 0 1.1400000000000001 1.1475 0 0 -2.2874999999999996 -3.435 0 0 -1.1400000000000001 -1.1400000000000001 0 0 3.4275z" fill="#00c400" stroke-width="0.75"></path>
+                            </g>
+                        </svg>
+                        <h3>Accelerated Workflow</h3>
+                        <ul class="feature-list">
+                            <li>Instant idea generation</li>
+                            <li>Rapid visual prototyping</li>
+                            <li>Automated research synthesis</li>
+                            <li>AI-powered first drafts</li>
+                            <li>Smart optimization</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card featured">
+                        <div class="sonar-ring-2"></div>
+                        <div class="card-meta">Strategic Integration • Impact</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Hand-Cross-Finger-Heart--Streamline-Pixel" height="48" width="48" style="margin-bottom: 1rem;">
+                            <desc>
+                                Hand Cross Finger Heart Streamline Icon: https://streamlinehq.com
+                            </desc>
+                            <title>hand-cross-finger-heart</title>
+                            <g>
+                                <path d="M20.0025 20.572499999999998h1.1400000000000001V24h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M18.855 19.4325h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M17.715 20.572499999999998h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M17.715 18.285h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M16.5675 21.7125h1.1475v1.1475h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M15.4275 17.145h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M16.5675 8.0025h1.1475v3.4275h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M15.4275 22.86h1.1400000000000001V24h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M15.4275 11.43h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.287500000000001 6.855h2.2800000000000002v1.1475h-2.2800000000000002Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.287500000000001 18.285h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.14 15.997499999999999h2.2874999999999996v1.1475h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.287500000000001 12.57h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.14 19.4325h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.14 13.7175h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.14 8.0025h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M12 20.572499999999998h1.1400000000000001v1.1400000000000001H12Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M12 14.857499999999998h1.1400000000000001v1.1400000000000001H12Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M12 9.1425h1.1400000000000001v1.1400000000000001H12Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M10.86 15.997499999999999H12v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M10.86 10.2825H12v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M9.712499999999999 17.145h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M9.712499999999999 11.43h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M8.5725 12.57h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M8.5725 9.1425h1.1400000000000001v2.2874999999999996h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M7.425000000000001 13.7175h1.1475v1.1400000000000001H7.425000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m7.425000000000001 0 0 1.1400000000000001 -1.1400000000000001 0 0 2.2874999999999996 1.1400000000000001 0 0 1.1475 1.1475 0 0 1.1400000000000001 1.1400000000000001 0 0 1.1400000000000001 1.1475 0 0 -1.1400000000000001 1.1400000000000001 0 0 -1.1400000000000001 1.1400000000000001 0 0 -1.1475 1.1475 0 0 -2.2874999999999996 -1.1475 0 0 -1.1400000000000001 -2.2800000000000002 0 0 1.1400000000000001 -1.1475 0 0 -1.1400000000000001L7.425000000000001 0z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.1450000000000005 8.0025h3.4275v1.1400000000000001H5.1450000000000005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m6.285 12.57 -1.1400000000000001 0 0 4.574999999999999 1.1400000000000001 0 0 -1.1475 1.1400000000000001 0 0 -1.1400000000000001 -1.1400000000000001 0 0 -2.2874999999999996z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M3.9975 17.145h1.1475v1.1400000000000001H3.9975Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M3.9975 9.1425h1.1475v3.4275H3.9975Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.8575 18.285h1.1400000000000001V24H2.8575Z" fill="#00c400" stroke-width="0.75"></path>
+                            </g>
+                        </svg>
+                        <h3>Smart Integration</h3>
+                        <ul class="feature-list">
+                            <li>AI for execution</li>
+                            <li>Human for strategy</li>
+                            <li>Seamless workflows</li>
+                            <li>Quality meets velocity</li>
+                            <li>Scalable processes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: AI Toolkit -->
+        <section class="slide" id="slide-4">
+            <div class="slide-number">04 / 09</div>
+            <div class="slide-content">
+                <h2>Professional AI Toolkit</h2>
+                <p>Essential tools for modern content creators</p>
+                
+                <div class="card-grid grid-2">
+                    <div class="card">
+                        <h3>Poe.com</h3>
+                        <div class="card-meta">AI Command Center</div>
+                        <p>Access Claude, GPT-4, Gemini, and cutting-edge AI models in one unified interface.</p>
+                        <p style="color: var(--primary-green); font-weight: 500;">Switch between AI models instantly to find the perfect tool for each task.</p>
+                    </div>
+                    
+                    <div class="card">
+                        
+                        <h3>Recraft.ai</h3>
+                        <div class="card-meta">Design Powerhouse</div>
+                        <p>Generate professional vector graphics, logos, and brand-consistent illustrations with AI precision.</p>
+                        <p style="color: var(--primary-green); font-weight: 500;">Create entire brand ecosystems with consistent style and color palettes.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Prompting Fundamentals -->
+        <section class="slide" id="slide-5">
+            <div class="slide-number">05 / 09</div>
+            <div class="slide-content">
+                <h2>Prompting Fundamentals</h2>
+                <p>The core skills that unlock AI potential across different domains</p>
+                
+                <div class="card-grid grid-3">
+                    <div class="prompting-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Email-Mail-Chat--Streamline-Pixel" height="48" width="48" style="margin-bottom: 1rem;">
+                            <desc>
+                                Email Mail Chat Streamline Icon: https://streamlinehq.com
+                            </desc>
+                            <title>email-mail-chat</title>
+                            <g>
+                                <path d="m16.575000000000003 11.43 0 1.1400000000000001 -2.2874999999999996 0 0 1.1475 -6.855 0 0 1.1400000000000001 3.4275 0 0 1.1400000000000001 1.1400000000000001 0 0 1.1475 1.1475 0 0 1.1400000000000001 4.5675 0 0 1.1400000000000001 1.1475 0 0 1.1475 1.1400000000000001 0 0 1.1400000000000001 1.1400000000000001 0 0 -4.5675 1.1475 0 0 -1.1475 1.1400000000000001 0 0 -4.5675 -1.1400000000000001 0 0 -1.1475 -1.1475 0 0 -1.1400000000000001 -2.2800000000000002 0 0 -3.4275 -1.1475 0 0 5.715 -1.1400000000000001 0z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M16.575000000000003 4.5675h1.1400000000000001v1.1475H16.575000000000003Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.1475 8.0025h2.2800000000000002v2.2800000000000002h-2.2800000000000002Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.287500000000001 3.4275h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M8.5725 8.0025h2.2874999999999996v2.2800000000000002h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M6.285 14.857499999999998h1.1475v1.1400000000000001H6.285Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.1450000000000005 2.2874999999999996h9.1425v1.1400000000000001H5.1450000000000005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m5.1450000000000005 13.7175 -1.1400000000000001 0 0 4.5675 1.1400000000000001 0 0 -1.1400000000000001 1.1400000000000001 0 0 -1.1475 -1.1400000000000001 0 0 -2.2800000000000002z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.005 8.0025h2.2800000000000002v2.2800000000000002H4.005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.8575 3.4275h2.2874999999999996v1.1400000000000001H2.8575Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.8575 12.57h1.1475v1.1475H2.8575Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M1.7175 11.43h1.1400000000000001v1.1400000000000001H1.7175Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M1.7175 4.5675h1.1400000000000001v1.1475H1.7175Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M0.5700000000000001 5.715h1.1475v5.715H0.5700000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            </g>
+                        </svg>
+                        <h3>Text Generation Framework</h3>
+                        <div class="code-block">
+                            <div class="code-line">
+                                <span class="code-comment">// 1. Role Definition</span><br>
+                                <span class="code-keyword">Act as</span> senior brand strategist
+                            </div>
+                            <div class="code-line">
+                                <span class="code-comment">// 2. Specific Task</span><br>
+                                <span class="code-keyword">Generate</span> 5 product names
+                            </div>
+                            <div class="code-line">
+                                <span class="code-comment">// 3. Context &amp; Constraints</span><br>
+                                <span class="code-keyword">For</span> smart coffee mug targeting pros
+                            </div>
+                            <div class="code-line">
+                                <span class="code-comment">// 4. Output Format</span><br>
+                                <span class="code-keyword">Present as</span> table with rationale
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="prompting-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Photography-Picture-Polaroid--Streamline-Pixel" height="48" width="48" style="margin-bottom: 1rem;">
+                            <desc>
+                                Photography Picture Polaroid Streamline Icon: https://streamlinehq.com
+                            </desc>
+                            <title>photography-picture-polaroid</title>
+                            <g>
+                                <path d="M22.29 2.8575h1.1400000000000001v19.4325h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.8575 22.29h19.4325v1.1400000000000001H2.8575Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M20.0025 1.7175h1.1400000000000001v18.285h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m17.715 10.86 -2.2874999999999996 0 0 1.1400000000000001 2.2874999999999996 0 0 3.4275 1.1475 0 0 -11.4225 -1.1475 0 0 6.855z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m15.4275 14.287500000000001 -1.1400000000000001 0 0 1.1400000000000001 -10.2825 0 0 1.1475 13.71 0 0 -1.1475 -2.2874999999999996 0 0 -1.1400000000000001z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.287500000000001 12h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.1475 13.1475h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m13.1475 9.712499999999999 2.2800000000000002 0 0 -1.1400000000000001 1.1475 0 0 -2.2874999999999996 -1.1475 0 0 -1.1400000000000001 -2.2800000000000002 0 0 1.1400000000000001 -1.1475 0 0 2.2874999999999996 1.1475 0 0 1.1400000000000001z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M12 12h1.1475v1.1475H12Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M10.86 10.86H12V12h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M9.72 9.712499999999999h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M7.4325 8.5725h2.2874999999999996v1.1400000000000001H7.4325Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M6.285 9.712499999999999h1.1475v1.1475H6.285Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.1450000000000005 10.86h1.1400000000000001V12H5.1450000000000005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.005 2.8575h13.71v1.1475H4.005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m4.005 13.1475 1.1400000000000001 0 0 -1.1475 -1.1400000000000001 0 0 -7.995 -1.1475 0 0 11.4225 1.1475 0 0 -2.2800000000000002z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M1.7175 0.5700000000000001h18.285v1.1475H1.7175Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M1.7175 20.0025h18.285v1.1400000000000001H1.7175Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M0.5700000000000001 1.7175h1.1475v18.285H0.5700000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            </g>
+                        </svg>
+                        <h3>Image Generation Framework</h3>
+                        <div class="code-block">
+                            <div class="code-line">
+                                <span class="code-comment">// 1. Subject &amp; Concept</span><br>
+                                <span class="code-keyword">Minimalist logo</span> for BrewSmart app
+                            </div>
+                            <div class="code-line">
+                                <span class="code-comment">// 2. Visual Style</span><br>
+                                <span class="code-keyword">Vector art,</span> flat design, geometric
+                            </div>
+                            <div class="code-line">
+                                <span class="code-comment">// 3. Color &amp; Mood</span><br>
+                                <span class="code-keyword">Electric blue</span> and charcoal gray
+                            </div>
+                            <div class="code-line">
+                                <span class="code-comment">// 4. Technical Specs</span><br>
+                                <span class="code-keyword">Centered,</span> transparent bg, scalable
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="prompting-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Ui-Design-Website--Streamline-Pixel" height="48" width="48" style="margin-bottom: 1rem;">
+                            <desc>
+                                Ui Design Website Streamline Icon: https://streamlinehq.com
+                            </desc>
+                            <title>ui-design-website</title>
+                            <g>
+                                <path d="m22.86 5.71875 -21.7125 0 0 -3.4275 -1.1475 0 0 19.424999999999997 1.1475 0 0 -14.857499999999998 21.7125 0 0 14.857499999999998 1.1400000000000001 0 0 -19.424999999999997 -1.1400000000000001 0 0 3.4275z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M1.1475 21.71625h21.7125v1.1400000000000001H1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M19.4325 14.861250000000002h1.1400000000000001v3.4275h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M18.285 18.28875h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M18.285 13.713750000000001h1.1475v1.1475h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.857499999999998 19.42875h3.4275v1.1475h-3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m18.285 13.713750000000001 0 -1.1400000000000001 -1.1400000000000001 0 0 -4.5675 -13.7175 0 0 6.855 2.2874999999999996 0 0 -1.1475 -1.1400000000000001 0 0 -4.5675 11.43 0 0 3.4275 -1.1475 0 0 1.1400000000000001 3.4275 0z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.7175 18.28875h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.7175 13.713750000000001h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M12.57 14.861250000000002h1.1475v3.4275h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M6.855 3.4312500000000004h1.1475v1.1400000000000001H6.855Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m4.574999999999999 16.00125 0 1.1475 -1.1475 0 0 1.1400000000000001 8.0025 0 0 -3.4275 -1.1400000000000001 0 0 -1.1475 -1.1475 0 0 -1.1400000000000001 -1.1400000000000001 0 0 1.1400000000000001 -1.1475 0 0 1.1475 -1.1400000000000001 0 0 1.1400000000000001 -1.1400000000000001 0z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.574999999999999 3.4312500000000004h1.1400000000000001v1.1400000000000001H4.574999999999999Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.2874999999999996 3.4312500000000004h1.1400000000000001v1.1400000000000001H2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M1.1475 1.1437499999999998h21.7125v1.1475H1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                            </g>
+                        </svg>
+                        <h3>Website Creation Framework</h3>
+                        <div class="code-block">
+                            <div class="code-line">
+                                <span class="code-comment">// 1. Page Purpose</span><br>
+                                <span class="code-keyword">Create landing page</span> for BrewSmart
+                            </div>
+                            <div class="code-line">
+                                <span class="code-comment">// 2. Technical Format</span><br>
+                                <span class="code-keyword">Single HTML file</span> with CSS/JS
+                            </div>
+                            <div class="code-line">
+                                <span class="code-comment">// 3. Content Sections</span><br>
+                                <span class="code-keyword">Hero, features, testimonials,</span> CTA
+                            </div>
+                            <div class="code-line">
+                                <span class="code-comment">// 4. Design Requirements</span><br>
+                                <span class="code-keyword">Responsive,</span> modern, conversion-focused
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: AI Tools & Resources -->
+        <section class="slide" id="slide-6">
+            <div class="slide-number">06 / 09</div>
+            <div class="slide-content">
+                <div class="resources-header">
+                    <h2>Essential AI Tools</h2>
+                    <p>Direct access to the most powerful AI platforms</p>
+                </div>
+                
+                <div class="tools-categories">
+                    <div class="tools-category">
+                        <h3>Text Generation</h3>
+                        <div class="tools-grid">
+                            <div class="tool-item">
+                                <div class="tool-name">Google AI Studio</div>
+                                <div class="tool-description">Advanced Gemini model for content generation and analysis</div>
+                                <a href="https://aistudio.google.com" class="tool-link" target="_blank">aistudio.google.com</a>
+                            </div>
+                            
+                            <div class="tool-item">
+                                <div class="tool-name">Poe.com</div>
+                                <div class="tool-description">Access Claude, GPT-4, and multiple AI models in one platform</div>
+                                <a href="https://poe.com" class="tool-link" target="_blank">poe.com</a>
+                            </div>
+                            
+                            <div class="tool-item">
+                                <div class="tool-name">ChatGPT</div>
+                                <div class="tool-description">OpenAI's conversational AI for content and code generation</div>
+                                <a href="https://chat.openai.com" class="tool-link" target="_blank">chat.openai.com</a>
+                            </div>
+                            
+                            <div class="tool-item">
+                                <div class="tool-name">Claude</div>
+                                <div class="tool-description">Advanced AI assistant for complex writing and analysis</div>
+                                <a href="https://claude.ai" class="tool-link" target="_blank">claude.ai</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tools-category">
+                        <h3>Visual Generation</h3>
+                        <div class="tools-grid">
+                            <div class="tool-item">
+                                <div class="tool-name">Recraft.ai</div>
+                                <div class="tool-description">Professional vector graphics and brand design generation</div>
+                                <a href="https://recraft.ai" class="tool-link" target="_blank">recraft.ai</a>
+                            </div>
+                            
+                            <div class="tool-item">
+                                <div class="tool-name">Canva AI</div>
+                                <div class="tool-description">AI-powered design tools for marketing materials</div>
+                                <a href="https://canva.com" class="tool-link" target="_blank">canva.com</a>
+                            </div>
+                            
+                            <div class="tool-item">
+                                <div class="tool-name">Leonardo.ai</div>
+                                <div class="tool-description">Advanced AI image generation for professional design</div>
+                                <a href="https://leonardo.ai" class="tool-link" target="_blank">leonardo.ai</a>
+                            </div>
+                            
+                            <div class="tool-item">
+                                <div class="tool-name">Firefly</div>
+                                <div class="tool-description">Adobe's AI image generation and editing tool</div>
+                                <a href="https://firefly.adobe.com" class="tool-link" target="_blank">firefly.adobe.com</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Mission Breakdown -->
+        <section class="slide" id="slide-7">
+            <div class="slide-number">07 / 09</div>
+            <div class="slide-content">
+                <h2>70-Minute Challenge</h2>
+                <p>Launch complete product concept from idea to market-ready assets</p>
+                
+                <div class="workflow">
+                    <div class="workflow-step">
+                        <div class="step-number">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Hand-Little-Finger--Streamline-Pixel" height="48" width="48">
+                                <desc>
+                                    Hand Little Finger Streamline Icon: https://streamlinehq.com
+                                </desc>
+                                <title>hand-little-finger</title>
+                                <g>
+                                    <path d="M20.0025 2.2912500000000002h1.1400000000000001v14.857499999999998h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M18.862499999999997 19.42875H7.4325v-1.1400000000000001H6.285v1.1400000000000001H5.1450000000000005v3.4275h15.997499999999999v-3.4275h-1.1400000000000001v-2.2800000000000002h-1.1400000000000001Zm0 2.2874999999999996H16.575000000000003v-1.1400000000000001h2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M17.715 1.1437499999999998h2.2874999999999996v1.1475h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M14.287500000000001 12.57375h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M8.5725 13.713750000000001H12v1.1475h-3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="m9.712499999999999 9.14625 -1.1400000000000001 0 0 1.1400000000000001 2.2874999999999996 0 0 -3.4275 2.2874999999999996 0 0 3.4275 -2.2874999999999996 0 0 1.1475 1.1400000000000001 0 0 2.2800000000000002 1.1475 0 0 -1.1400000000000001 1.1400000000000001 0 0 -5.715 2.2874999999999996 0 0 5.715 1.1400000000000001 0 0 -10.2825 -1.1400000000000001 0 0 3.4275 -9.1425 0 0 1.1400000000000001 2.2800000000000002 0 0 2.2874999999999996z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M7.4325 12.57375h1.1400000000000001v1.1400000000000001H7.4325Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="m8.5725 9.14625 0 -1.1475 -1.1400000000000001 0 0 -1.1400000000000001 -1.1475 0 0 1.1400000000000001 -1.1400000000000001 0 0 1.1475 3.4275 0z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M5.1450000000000005 17.14875h1.1400000000000001v1.1400000000000001H5.1450000000000005Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M4.005 14.861250000000002h1.1400000000000001v2.2874999999999996H4.005Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M4.005 9.14625h1.1400000000000001v1.1400000000000001H4.005Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M2.8575 10.286249999999999h1.1475v4.574999999999999H2.8575Z" fill="#00c400" stroke-width="0.75"></path>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="step-title">IDEATE</div>
+                    </div>
+                    <div class="workflow-arrow">&gt;</div>
+                    <div class="workflow-step">
+                        <div class="step-number">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Hand-Fight-2-Finger--Streamline-Pixel" height="48" width="48">
+                                <desc>
+                                    Hand Fight 2 Finger Streamline Icon: https://streamlinehq.com
+                                </desc>
+                                <title>hand-fight-2-finger</title>
+                                <g>
+                                    <path d="m18.285 13.7175 0 1.1400000000000001 2.2874999999999996 0 0 3.4275 1.1400000000000001 0 0 -8.0025 -1.1400000000000001 0 0 3.435 -2.2874999999999996 0z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M19.4325 20.572499999999998H8.0025v-1.1400000000000001H6.855v1.1400000000000001H5.715V24h15.997499999999999v-3.4275h-1.1400000000000001v-2.2800000000000002h-1.1400000000000001Zm0 2.2874999999999996h-2.2874999999999996v-1.1400000000000001h2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="m17.145 13.7175 1.1400000000000001 0 0 -3.435 2.2874999999999996 0 0 -1.1400000000000001 -3.4275 0 0 4.574999999999999z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M17.145 1.1400000000000001h1.1400000000000001V4.574999999999999h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M15.997499999999999 4.574999999999999h1.1475v2.2800000000000002h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M14.857499999999998 13.7175h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="m14.857499999999998 9.1425 2.2874999999999996 0 0 -1.1400000000000001 -1.1475 0 0 -1.1475 -1.1400000000000001 0 0 2.2874999999999996z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M13.7175 0h3.4275v1.1400000000000001h-3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="m13.7175 14.857499999999998 0 -1.1400000000000001 1.1400000000000001 0 0 -4.574999999999999 -1.1400000000000001 0 0 3.4275 -1.1475 0 0 2.2874999999999996 1.1475 0z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M12.57 1.1400000000000001h1.1475V4.574999999999999h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M11.43 11.43h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M11.43 4.574999999999999h1.1400000000000001v2.2800000000000002h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M9.1425 14.857499999999998h3.4275v1.1400000000000001h-3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="m9.712499999999999 10.290000000000001 -1.1400000000000001 0 0 1.1400000000000001 2.2800000000000002 0 0 -10.2825 -3.4275 0 0 1.1400000000000001 2.2874999999999996 0 0 8.0025z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M7.425000000000001 13.7175h1.1475v1.1400000000000001H7.425000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="m8.5725 10.290000000000001 0 -1.1475 -1.1475 0 0 -6.855 -1.1400000000000001 0 0 6.855 -1.1475 0 0 1.1475 3.435 0z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M5.137499999999999 18.2925h1.1475v1.1400000000000001H5.137499999999999Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M3.9975 16.005h1.1400000000000001v2.2874999999999996H3.9975Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M3.9975 10.290000000000001h1.1400000000000001v1.1400000000000001H3.9975Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M2.8575 11.43h1.1400000000000001v4.574999999999999H2.8575Z" fill="#00c400" stroke-width="0.75"></path>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="step-title">DESIGN</div>
+                    </div>
+                    <div class="workflow-arrow">&gt;</div>
+                    <div class="workflow-step">
+                        <div class="step-number">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Hand-Three-Finger--Streamline-Pixel" height="48" width="48">
+                                <desc>
+                                    Hand Three Finger Streamline Icon: https://streamlinehq.com
+                                </desc>
+                                <title>hand-three-finger</title>
+                                <g>
+                                    <path d="m19.995 13.7175 -2.2800000000000002 0 0 1.1400000000000001 2.2800000000000002 0 0 3.435 1.1475 0 0 -8.0025 -1.1475 0 0 3.4275z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M18.855 20.572499999999998H7.425000000000001v-1.1400000000000001H6.285v1.1400000000000001H5.137499999999999V24h16.005v-3.4275h-1.1475v-2.2800000000000002h-1.1400000000000001Zm0 2.2874999999999996h-2.2874999999999996v-1.1400000000000001h2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M18.855 9.1425h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="m16.5675 13.7175 1.1475 0 0 -4.574999999999999 1.1400000000000001 0 0 -1.1400000000000001 -1.1400000000000001 0 0 -4.5675 -1.1475 0 0 10.2825z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="m13.14 11.43 1.1475 0 0 -7.995 2.2800000000000002 0 0 -1.1475 -2.2800000000000002 0 0 -1.1400000000000001 -1.1475 0 0 10.2825z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M12 12.5775h1.1400000000000001v2.2800000000000002H12Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M10.852500000000001 0h2.2874999999999996v1.1475h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M10.852500000000001 11.43H12v1.1475h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M8.5725 14.857499999999998H12v1.1475h-3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="m9.712499999999999 10.290000000000001 -1.1400000000000001 0 0 1.1400000000000001 2.2800000000000002 0 0 -10.2825 -3.4275 0 0 1.1400000000000001 2.2874999999999996 0 0 8.0025z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M7.425000000000001 13.7175h1.1475v1.1400000000000001H7.425000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="m8.5725 10.290000000000001 0 -1.1475 -1.1475 0 0 -6.855 -1.1400000000000001 0 0 6.855 -1.1475 0 0 1.1475 3.435 0z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M5.137499999999999 18.2925h1.1475v1.1400000000000001H5.137499999999999Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M3.9975 16.005h1.1400000000000001v2.2874999999999996H3.9975Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M3.9975 10.290000000000001h1.1400000000000001v1.1400000000000001H3.9975Z" fill="#00c400" stroke-width="0.75"></path>
+                                    <path d="M2.8575 11.43h1.1400000000000001v4.574999999999999H2.8575Z" fill="#00c400" stroke-width="0.75"></path>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="step-title">MARKET</div>
+                    </div>
+                </div>
+
+                <div class="card-grid grid-3">
+                    <div class="card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Content-Files-Draw-Content--Streamline-Pixel" height="48" width="48" style="margin-bottom: 1rem;">
+                            <desc>
+                                Content Files Draw Content Streamline Icon: https://streamlinehq.com
+                            </desc>
+                            <title>content-files-draw-content</title>
+                            <g>
+                                <path d="M22.29 18.862499999999997h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M21.142500000000002 17.715h1.1475v1.1475h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M21.142500000000002 9.72h1.1475V12h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M18.862499999999997 20.0025h3.4275v1.1400000000000001h-3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M20.0025 16.575000000000003h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m20.0025 10.86 -1.1400000000000001 0 0 -1.1400000000000001 -1.1475 0 0 1.1400000000000001 -1.1400000000000001 0 0 1.1400000000000001 -1.1475 0 0 1.1475 -1.1400000000000001 0 0 1.1400000000000001 -1.1400000000000001 0 0 1.1400000000000001 -1.1475 0 0 1.1475 1.1475 0 0 1.1400000000000001 1.1400000000000001 0 0 1.1475 1.1400000000000001 0 0 -1.1475 1.1475 0 0 -1.1400000000000001 1.1400000000000001 0 0 -1.1475 1.1475 0 0 -1.1400000000000001 1.1400000000000001 0 0 -1.1400000000000001 1.1400000000000001 0 0 -1.1475 -1.1400000000000001 0 0 -1.1400000000000001z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M18.862499999999997 8.5725h2.2800000000000002v1.1475h-2.2800000000000002Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M16.575000000000003 21.142500000000002h2.2874999999999996v1.1475H16.575000000000003Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M15.4275 8.5725h1.1475v1.1475h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M15.4275 4.005h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.005 22.29H16.575000000000003v1.1400000000000001H4.005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.287500000000001 7.4325h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.287500000000001 5.1450000000000005h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m12 16.575000000000003 -1.1400000000000001 0 0 3.4275 3.4275 0 0 -1.1400000000000001 -2.2874999999999996 0 0 -2.2874999999999996z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m13.1475 12 0 -1.1400000000000001 1.1400000000000001 0 0 -1.1400000000000001 -3.4275 0 0 1.1400000000000001 1.1400000000000001 0L12 12l1.1475 0z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M12 4.005h1.1475v1.1400000000000001H12Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m8.5725 15.4275 0 -1.1400000000000001 -1.1400000000000001 0 0 2.2874999999999996 3.4275 0 0 -1.1475 -2.2874999999999996 0z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M9.72 13.1475h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M7.4325 18.862499999999997h2.2874999999999996v1.1400000000000001H7.4325Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m8.5725 12 0 -1.1400000000000001 1.1475 0 0 -1.1400000000000001 -3.435 0 0 1.1400000000000001 1.1475 0 0 1.1400000000000001 1.1400000000000001 0z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m14.287500000000001 7.4325 0 -1.1475 -2.2874999999999996 0 0 -1.1400000000000001 -1.1400000000000001 0 0 1.1400000000000001 -1.1400000000000001 0 0 -3.4275 -1.1475 0 0 3.4275 -1.1400000000000001 0 0 -1.1400000000000001 -1.1475 0 0 2.2874999999999996 8.0025 0z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.1450000000000005 17.715h2.2874999999999996v1.1475H5.1450000000000005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.1450000000000005 7.4325h1.1400000000000001v1.1400000000000001H5.1450000000000005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.1450000000000005 4.005h1.1400000000000001v1.1400000000000001H5.1450000000000005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.005 8.5725h1.1400000000000001v9.1425H4.005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.005 6.285h1.1400000000000001v1.1475H4.005Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.8575 18.862499999999997h1.1475v3.4275H2.8575Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.8575 5.1450000000000005h1.1475v1.1400000000000001H2.8575Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M1.7175 14.287500000000001h1.1400000000000001v4.574999999999999H1.7175Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="m1.7175 1.7175 15.997499999999999 0 0 5.715 1.1475 0 0 -6.862500000000001L0.5700000000000001 0.5700000000000001l0 13.7175 1.1475 0 0 -12.57z" fill="#00c400" stroke-width="0.75"></path>
+                            </g>
+                        </svg>
+                        <div class="card-meta">Phase 1 • 25 Minutes</div>
+                        <h3>Concept Development</h3>
+                        <p><strong>Tool:</strong> Poe.com</p>
+                        <ul class="feature-list">
+                            <li>Product name &amp; positioning</li>
+                            <li>Compelling tagline</li>
+                            <li>3 core features with benefits</li>
+                            <li>Target audience persona</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Interface-Essential-Finger-Print-Scan--Streamline-Pixel" height="48" width="48" style="margin-bottom: 1rem;">
+                            <desc>
+                                Interface Essential Finger Print Scan Streamline Icon: https://streamlinehq.com
+                            </desc>
+                            <title>interface-essential-finger-print-scan</title>
+                            <g>
+                                <path d="M20.572499999999998 8.0025h1.1400000000000001v10.2825h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M20.572499999999998 5.715h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M19.4325 18.285h1.1400000000000001v2.2874999999999996h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M19.4325 3.4275h1.1400000000000001v2.2874999999999996h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M18.285 13.7175h1.1475v3.4275h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M18.285 6.855h1.1475v3.4275h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M17.145 17.145h1.1400000000000001v2.2874999999999996h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M17.145 4.574999999999999h1.1400000000000001v2.2800000000000002h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M15.997499999999999 21.7125h1.1475v1.1475h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M15.997499999999999 8.0025h1.1475v7.995h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.857499999999998 3.4275h2.2874999999999996V4.574999999999999h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M15.997499999999999 1.1400000000000001h1.1475v1.1475h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.857499999999998 19.4325h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M14.857499999999998 6.855h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.7175 22.86h2.2800000000000002V24h-2.2800000000000002Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.7175 17.145h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.7175 12.57h1.1400000000000001v2.2874999999999996h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M13.7175 9.1425h1.1400000000000001v2.2874999999999996h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M12.57 2.2874999999999996h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M9.1425 20.572499999999998h5.715v1.1400000000000001h-5.715Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M11.43 8.0025h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M10.2825 14.857499999999998h3.435v1.1400000000000001h-3.435Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M11.43 10.2825h1.1400000000000001v3.435h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M10.2825 4.574999999999999h3.435v1.1400000000000001h-3.435Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M10.2825 18.285h3.435v1.1475h-3.435Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M9.1425 2.2874999999999996h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M8.0025 22.86h3.4275V24h-3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M9.1425 17.145h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M9.1425 10.2825h1.1400000000000001v4.574999999999999h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M8.0025 0h7.995v1.1400000000000001H8.0025Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M8.0025 6.855h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M6.855 3.4275h2.2874999999999996V4.574999999999999H6.855Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.715 21.7125h2.2874999999999996v1.1475H5.715Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M6.855 14.857499999999998h1.1475v1.1400000000000001H6.855Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M6.855 11.43h1.1475v2.2874999999999996H6.855Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M6.855 8.0025h1.1475v2.2800000000000002H6.855Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.715 17.145h1.1400000000000001v2.2874999999999996H5.715Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.715 4.574999999999999h1.1400000000000001v2.2800000000000002H5.715Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.574999999999999 20.572499999999998h1.1400000000000001v1.1400000000000001H4.574999999999999Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.574999999999999 8.0025h1.1400000000000001v9.1425H4.574999999999999Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M4.574999999999999 2.2874999999999996h1.1400000000000001v1.1400000000000001H4.574999999999999Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M3.4275 18.285H4.574999999999999v2.2874999999999996H3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M3.4275 3.4275H4.574999999999999v2.2874999999999996H3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.2874999999999996 14.857499999999998h1.1400000000000001v3.4275H2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.2874999999999996 5.715h1.1400000000000001v8.0025H2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                            </g>
+                        </svg>
+                        <div class="card-meta">Phase 2 • 25 Minutes</div>
+                        <h3>Visual Identity</h3>
+                        <p><strong>Tool:</strong> Recraft.ai</p>
+                        <ul class="feature-list">
+                            <li>Professional logo design</li>
+                            <li>Brand color palette</li>
+                            <li>Key marketing visual</li>
+                            <li>Feature icon set</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Interface-Essential-Iris-Scan--Streamline-Pixel" height="48" width="48" style="margin-bottom: 1rem;">
+                            <desc>
+                                Interface Essential Iris Scan Streamline Icon: https://streamlinehq.com
+                            </desc>
+                            <title>interface-essential-iris-scan</title>
+                            <g>
+                                <path d="M22.86 19.4325H24v3.4275h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M22.86 10.290000000000001H24v3.4275h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M22.86 1.1475H24V4.574999999999999h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M21.7125 13.7175h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M21.7125 9.1425h1.1475v1.1475h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M19.4325 0h3.4275v1.1475h-3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M19.4325 22.86h3.4275V24h-3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M20.572499999999998 14.857499999999998h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M20.572499999999998 8.0025h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M18.285 16.005h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M18.285 6.862500000000001h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M16.005 17.145h2.2800000000000002v1.1400000000000001h-2.2800000000000002Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M16.005 5.715h2.2800000000000002v1.1475h-2.2800000000000002Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M16.005 9.1425h-1.1475v-1.1400000000000001h-1.1400000000000001V6.862500000000001h-3.4275v1.1400000000000001h-1.1475v1.1400000000000001h-1.1400000000000001v1.1475H6.862500000000001v3.4275h1.1400000000000001v1.1400000000000001h1.1400000000000001v1.1475h1.1475v1.1400000000000001h3.4275v-1.1400000000000001h1.1400000000000001v-1.1475h1.1475v-1.1400000000000001h1.1400000000000001v-3.4275h-1.1400000000000001Zm-2.2874999999999996 3.435h-1.1475v1.1400000000000001h-1.1400000000000001v-1.1400000000000001h-1.1400000000000001v-1.1475h1.1400000000000001v-1.1400000000000001h1.1400000000000001v1.1400000000000001h1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M8.0025 18.285h8.0025v1.1475H8.0025Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M8.0025 4.574999999999999h8.0025v1.1400000000000001H8.0025Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.715 17.145h2.2874999999999996v1.1400000000000001H5.715Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M5.715 5.715h2.2874999999999996v1.1475H5.715Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M3.4275 16.005h2.2874999999999996v1.1400000000000001H3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M3.4275 6.862500000000001h2.2874999999999996v1.1400000000000001H3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M1.1475 22.86H4.574999999999999V24H1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.2874999999999996 14.857499999999998h1.1400000000000001v1.1475H2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M2.2874999999999996 8.0025h1.1400000000000001v1.1400000000000001H2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M1.1475 0H4.574999999999999v1.1475H1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M1.1475 13.7175h1.1400000000000001v1.1400000000000001H1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M1.1475 9.1425h1.1400000000000001v1.1475H1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M0 19.4325h1.1475v3.4275H0Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M0 10.290000000000001h1.1475v3.4275H0Z" fill="#00c400" stroke-width="0.75"></path>
+                                <path d="M0 1.1475h1.1475V4.574999999999999H0Z" fill="#00c400" stroke-width="0.75"></path>
+                            </g>
+                        </svg>
+                        <div class="card-meta">Phase 3 • 20 Minutes</div>
+                        <h3>Marketing Assets</h3>
+                        <p><strong>Tool:</strong> Poe.com</p>
+                        <ul class="feature-list">
+                            <li>Launch announcement email</li>
+                            <li>3 social media posts</li>
+                            <li>Product description copy</li>
+                            <li>Press release outline</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Timer -->
+        <section class="slide" id="slide-8">
+            <div class="slide-number">08 / 09</div>
+            <div class="slide-content">
+                <h2>Ready, Set, Create!</h2>
+                <div class="timer-display" id="countdown-timer">70:00</div>
+                <p>Focus on progress, not perfection. Raise your hand if you need guidance.</p>
+                <div class="timer-controls">
+                    <button class="btn" onclick="startTimer()" id="start-btn">Start Timer</button>
+                    <button class="btn" onclick="resetTimer()">Reset Timer</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: Thank You -->
+        <section class="slide" id="slide-9">
+            <div class="slide-number">09 / 09</div>
+            <div class="slide-content">
+                <h2>Thank You</h2>
+                <div class="pixel-heart">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Interface-Essential-Heart-Favorite--Streamline-Pixel" height="96" width="96">
+                        <desc>
+                            Interface Essential Heart Favorite Streamline Icon: https://streamlinehq.com
+                        </desc>
+                        <title>interface-essential-heart-favorite</title>
+                        <g>
+                            <path d="M22.8525 6.285H24V12h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M21.7125 12h1.1400000000000001v2.2874999999999996h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M21.7125 5.1450000000000005h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M20.572499999999998 14.287500000000001h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M20.572499999999998 7.425000000000001h1.1400000000000001v2.2874999999999996h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M20.572499999999998 3.9975h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M19.424999999999997 6.285h1.1475V7.425000000000001H19.424999999999997Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M18.285 15.4275h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M17.137500000000003 5.1450000000000005h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M15.997499999999999 16.5675h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M14.857499999999998 2.8575h5.715v1.1400000000000001h-5.715Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M13.71 17.715h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M13.71 3.9975h1.1475v1.1475h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M12.57 18.855h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M12.57 5.1450000000000005h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M11.43 19.995h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M11.43 6.285h1.1400000000000001V7.425000000000001h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M10.2825 18.855h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M10.2825 5.1450000000000005h1.1475v1.1400000000000001h-1.1475Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M7.995 17.715h2.2874999999999996v1.1400000000000001h-2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M9.1425 3.9975h1.1400000000000001v1.1475h-1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M5.715 16.5675h2.2800000000000002v1.1475H5.715Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M3.4275 15.4275h2.2874999999999996v1.1400000000000001H3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M3.4275 2.8575h5.715v1.1400000000000001H3.4275Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M2.2874999999999996 14.287500000000001h1.1400000000000001v1.1400000000000001H2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M2.2874999999999996 3.9975h1.1400000000000001v1.1475H2.2874999999999996Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M1.1400000000000001 12h1.1475v2.2874999999999996H1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M1.1400000000000001 5.1450000000000005h1.1475v1.1400000000000001H1.1400000000000001Z" fill="#00c400" stroke-width="0.75"></path>
+                            <path d="M0 6.285h1.1400000000000001V12H0Z" fill="#00c400" stroke-width="0.75"></path>
+                        </g>
+                    </svg>
+                </div>
+                <p>Continue building the future of creative work together</p>
+                
+                <p class="connect-text">Let's connect on LinkedIn</p>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/john-kvezereli/" class="social-link">
+                        <img src="assets/Logo-Linkedin--Streamline-Pixel.svg" alt="LinkedIn" style="width: 48px; height: 48px;">
+                    </a>
+                </div>
+                
+            
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Presentation logic
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let timerInterval = null;
+        let timeRemaining = 70 * 60; // Changed to 70 minutes
+        let isTimerRunning = false;
+
+        // Typewriter animation variables
+        let typewriterInterval = null;
+        let currentWordIndex = 0;
+        let currentCharIndex = 0;
+        let isTyping = true;
+        let isErasing = false;
+        const words = ['CONTENT', 'IMAGES', 'VIDEO', 'AUDIO', 'TEXT', 'WORKFLOW'];
+        const typeSpeed = 70; // milliseconds per character
+        const eraseSpeed = 70; // milliseconds per character when erasing
+        const pauseAfterWord = 2000; // pause after completing a word
+        const pauseAfterErase = 500; // pause after erasing
+
+        // Initialize navigation
+        function createNavigation() {
+            const navDots = document.getElementById('nav-dots');
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'nav-dot';
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => showSlide(i));
+                navDots.appendChild(dot);
+            }
+        }
+
+        // Show slide
+        function showSlide(index) {
+            if (index < 0 || index >= totalSlides) return;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            
+            document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            
+            currentSlide = index;
+
+            // Start typewriter animation only on hero slide
+            if (index === 0) {
+                startTypewriter();
+            } else {
+                stopTypewriter();
+            }
+        }
+
+        // Typewriter effect
+        function startTypewriter() {
+            if (typewriterInterval) return; // Already running
+            
+            const textElement = document.getElementById('typewriter-text');
+            
+            typewriterInterval = setInterval(() => {
+                const currentWord = words[currentWordIndex];
+                
+                if (isTyping && !isErasing) {
+                    // Typing phase
+                    if (currentCharIndex < currentWord.length) {
+                        textElement.innerHTML = currentWord.slice(0, currentCharIndex + 1) + '<span class="cursor">|</span>';
+                        currentCharIndex++;
+                    } else {
+                        // Finished typing, pause then start erasing
+                        isTyping = false;
+                        setTimeout(() => {
+                            isErasing = true;
+                        }, pauseAfterWord);
+                    }
+                } else if (isErasing) {
+                    // Erasing phase
+                    if (currentCharIndex > 0) {
+                        currentCharIndex--;
+                        textElement.innerHTML = currentWord.slice(0, currentCharIndex) + '<span class="cursor">|</span>';
+                    } else {
+                        // Finished erasing, move to next word
+                        isErasing = false;
+                        currentWordIndex = (currentWordIndex + 1) % words.length;
+                        setTimeout(() => {
+                            isTyping = true;
+                        }, pauseAfterErase);
+                    }
+                }
+            }, isErasing ? eraseSpeed : typeSpeed);
+        }
+
+        function stopTypewriter() {
+            if (typewriterInterval) {
+                clearInterval(typewriterInterval);
+                typewriterInterval = null;
+            }
+        }
+
+        // Timer functions
+        function startTimer() {
+            if (!isTimerRunning) {
+                isTimerRunning = true;
+                document.getElementById('start-btn').textContent = 'Pause Timer';
+                timerInterval = setInterval(updateTimer, 1000);
+            } else {
+                pauseTimer();
+            }
+        }
+
+        function pauseTimer() {
+            isTimerRunning = false;
+            document.getElementById('start-btn').textContent = 'Resume Timer';
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            timeRemaining = 70 * 60; // Changed to 70 minutes
+            isTimerRunning = false;
+            document.getElementById('start-btn').textContent = 'Start Timer';
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+        }
+
+        function updateTimer() {
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('countdown-timer').textContent = "Time Complete!";
+                document.getElementById('start-btn').textContent = 'Timer Complete';
+                isTimerRunning = false;
+                return;
+            }
+            
+            timeRemaining--;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('countdown-timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Navigation
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight':
+                case ' ':
+                    e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    prevSlide();
+                    break;
+            }
+        });
+
+        // Touch navigation
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        });
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            createNavigation();
+            showSlide(0);
+            
+            // Start typewriter after a brief delay
+            setTimeout(() => {
+                startTypewriter();
+            }, 1000);
+        });
+    </script>
+
+
+</body></html>
